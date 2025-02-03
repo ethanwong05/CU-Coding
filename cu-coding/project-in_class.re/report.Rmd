@@ -1,0 +1,91 @@
+---
+title: "Regression Model"
+author: "Ethan"
+date: "6/2/21"
+output: html_document
+---
+
+# - Set the Working Directory
+
+```{r}
+setwd("~/Desktop/Columbia Program Coding/project-in_class.re")
+```
+
+# - Load the libraries
+
+The following are the required packages in order to run the project "project-in_class.re"
+
+```{r warning=FALSE}
+source('functions/libraries.r')
+libraries()
+```
+
+# - Import the Data
+
+```{r warning=FALSE}
+print("Importing the Data...")
+data <- read_excel("data/FinalData.xlsx")
+```
+
+# - Inspect the Data
+
+```{r}
+str(data)
+```
+
+Above, we can view the structure of the data before we modify it. In this, we can see the data structure and its different datasets in the dataframe.
+
+# - Subset Ignoble Variables
+
+```{r}
+sub = data[, !colnames(data) %in% c('...1','doc.id','location','population','text')]
+str(sub)
+```
+
+Before we can explore the data of the Original Dataset, we must first remove some of the variables that are ignoble and will not greatly affect the dataset.
+
+# - Exploration of the Original
+
+```{r}
+source("scripts/explore_O.r")
+```
+
+To confirm that the features reflect the dataframe, we implemented a correlation analysis to view the correlation between each of the datasets and to make sure that there is no insane numbers.
+
+```{r echo = F, fig.cap= 'Correlation Matrix of the datasets'}
+library(png)
+library(grid)
+img <- readPNG("./pictures/cor.png")
+grid.raster(img)
+```
+
+# - Preprocess the Data
+
+In this case, we must now evaluate the data and preprocess it in order to run the modeling. In addition to this, we are also removing 'infection count' because it is highly correlated to the other datasets— meaning that we can subset it.
+
+```{r}
+source('functions/prepdata.r.r')
+preprocess(sub,'infectioncount')
+```
+
+After preprocessing the original data, our prep data contains the following variables: `r c(colnames(sub))`
+
+# - Explore the Prep
+
+Before we begin the modeling, let's have one last look at the data:
+
+```{r}
+source("scripts/explore_P.r")
+```
+
+```{r echo = F, fig.cap= 'Correlation Matrix Plot of the Processed Data'}
+img <- readPNG("./pictures/cor_prep.png")
+grid.raster(img)
+```
+
+# - Regression Modeling
+
+```{r message=FALSE, warning=FALSE}
+source("scripts/modeling.r")
+```
+

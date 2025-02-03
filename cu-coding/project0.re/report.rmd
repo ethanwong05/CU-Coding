@@ -1,0 +1,71 @@
+---
+title: "Untitled"
+author: "jwk"
+date: "7/1/2021"
+output: html_document
+---
+
+# Libraries 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+setwd("C://Users//wongs//Desktop//cu-coding//project0.re")
+source('functions/libraries.r')
+libraries()
+```
+
+# Import the Data
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+data <- read_excel("data/FinalData.xlsx")
+```
+
+# Inspect the Data 
+```{r}
+str(data)
+```
+
+# Subset Ignoble Variables 
+```{r}
+sub = data[, !colnames(data) %in% c('...1','doc.id','location','population','text')]
+str(sub)
+```
+
+# Exploration of the Original 
+
+```{r}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+source("scripts/explore_O.r")
+```
+
+
+```{r echo = F, fig.cap = 'Correlation'}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+library(png)
+library(grid)
+img <- readPNG("./pictures/cor.png")
+grid.raster(img)
+```
+
+
+# Preprocess the Data 
+
+```{r}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+source('functions/prepdata.r.r')
+preprocess(sub,'infectioncount')
+```
+
+# Exploration of the Prep 
+```{r}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+source("scripts/explore_P.r")
+```
+
+
+```{r echo = F, fig.cap = 'Correlation'}
+setwd("C:/Users/wongs/Desktop/cu-coding/project0.re")
+library(png)
+library(grid)
+img <- readPNG("./pictures/cor_prep.png")
+grid.raster(img)
+```

@@ -1,0 +1,11 @@
+Dates = index(prep)
+p1 = ggplot(data, aes(x =index(data), y= close)) + geom_line() + ggtitle("Close Price")
+p2 = ggplot(data, aes(x =index(data), y= volume)) + geom_line() + ggtitle("Volume Price")
+png("pictures/grid_line_P.png")
+print(plot_grid(p1, p2))
+dev.off()
+
+cor = cor(prep[,c(-3)])
+png("pictures/cor_P.png")
+print(corrplot::corrplot(cor))
+dev.off()

@@ -1,0 +1,87 @@
+---
+title: "Report_Classification"
+author: "Ethan"
+date: "7-2-2021"
+output: html_document
+---
+
+# - Set the Working Directory
+```{r}
+setwd("~/Desktop/Columbia Program Coding/project1.cl")
+```
+
+# - Load the libraries
+
+The following are the required packages in order to run the project "project1.cl"
+
+```{r warning=FALSE}
+source("functions/libs.r")
+libraries()
+```
+
+# - Import the Data
+
+```{r warning=FALSE}
+print("Importing the Data...")
+source("scripts/import_data.R")
+```
+
+Above is the importation of the data, which is a time series containing `r colnames(data)`
+
+# - Exploration of the Original
+
+Looking at the original data, we noticed that all linear inputs 
+`r c(colnames(data[,c(1:4)]))` demonstrates that all predictors reflect the same features.
+
+```{r}
+source("scripts/explore_O.r")
+```
+
+To confirm that the features reflect `r c(colnames(data[,c(1:4)]))`, we implemented a correlation analysis and noticed that all inputs are highly correlated.
+
+```{r echo = F, fig.cap= 'Gridded Line Plots of the datasets'}
+library(png)
+library(grid)
+img <- readPNG("./pictures/grid_line.png")
+grid.raster(img)
+```
+
+```{r echo = F, fig.cap= 'Correlation Matrix of the datasets'}
+library(png)
+library(grid)
+img <- readPNG("./pictures/cor_O.png")
+grid.raster(img)
+```
+
+# - Preprocess the Data
+
+In that case, we will removed the inputs `r c(colnames(data[,c(1:3, 6)]))` and prepared a new categrorical input to change the data from fitting a regression problem to a classification problem.
+
+```{r}
+source("scripts/prep.r")
+```
+
+After preprocessing the original data, our prep data contains the following variables: `r c(colnames(prep))`
+
+# - Explore the Prep
+
+```{r}
+source("scripts/explore_P.r")
+```
+
+```{r echo = F, fig.cap= 'Gridded Line Plots of the Processed Datasets'}
+img <- readPNG("./pictures/grid_line_P.png")
+grid.raster(img)
+```
+
+```{r echo = F, fig.cap= 'Correlation Matrix Plot of the Processed Data'}
+img <- readPNG("./pictures/cor_P.png")
+grid.raster(img)
+```
+
+# - Classification Modeling
+
+```{r message=FALSE, warning=FALSE}
+source("modeling/modeling.r")
+```
+

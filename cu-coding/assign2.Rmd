@@ -1,0 +1,248 @@
+---
+title: 'Assignment #2 - Processing Data'
+author: 'Ethan Wong'
+date: "6/30/2021"
+output: html_document
+---
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+options(width = 60)
+library(reticulate) ### (... helps Rstudio connect to your python enviroment.)
+py_config() # locate the direct path to your 
+```
+
+**Instructions** Provide your responses to the following questions in both R and Python. 
+Follow the guidelines @  [assign2_guidelines](https://github.com/jkorn81/cu-hsp-learning/tree/main/assignments/assignment2) for more direction.
+Also, make sure to use the supporting scripts @ [05_processing_data](https://github.com/jkorn81/cu-hsp-learning/tree/main/05_processing_data).
+
+# Part 1 - Structured Data
+
+**Question #1:** Import the iris csv from the course collection contained in `data` and print the structure of the dataframe using the `str()` function to show a representation of the object.
+
+```{r echo=TRUE}
+library(datasets)
+library(readr)
+setwd("~/Desktop/cu-hsp-learning-main/assignments/assignment2")
+#Couldn't find it anywhere else, so I just found a path to an iris.csv with similar data
+
+data = data.frame(read_csv('data/iris.csv'))
+str(data)
+```
+
+**Question #2:** Subset any of the variables containing `Sepal` from the data. 
+
+```{r echo=TRUE}
+remove = c("sepal.width", 'sepal.length')
+data = data[, !colnames(data) %in% c(remove)]
+print(str(data))
+#Not gonna use the subset_variable function just because we won't need to use it again.
+#Obviously, in this case, I subsetted Sepal.Length from the data.
+```
+
+**Question #3:** Impute Missing/NA Values in the subsetted dataframe. 
+
+```{r echo=TRUE}
+#To make sure that we have all the packages that we need
+if (!require("mice")) {
+  install.packages("mice")
+  library(mice)
+}
+if (!require("magrittr")) {
+  library(magrittr)
+}
+#Wow! Surprisingly my mac can run this. Genuinely surprised.
+
+missing = data %>% mice::mice(m=5,maxit=50,meth="sample",seed=500,print = FALSE)
+missing <- mice::complete(missing, action=as.numeric(2))
+data = na.omit(missing)
+print(str(data))
+```
+*Question #4:** Convert the Variables in the dataframe as followed:
+
+- `petal.width` and `petal.length` to numerical type. 
+- `variety` to factor type. 
+
+```{r echo=TRUE}
+#They were already in numeric value, but just for practice:
+data[, 'petal.width'] = as.numeric(data[, 'petal.width'])
+data[, 'petal.width']
+
+data[, 'petal.length'] = as.numeric(data[, 'petal.length'])
+data[, 'petal.length']
+
+#And now for converting to factor types:
+data[, 'variety'] = as.factor(data[, 'variety'])
+data[, 'variety']
+```
+
+**Question #5:** Normalize the Data, *(aka. Feature Engineering)* using `center, scale, and corr`.
+
+```{r echo=TRUE}
+if (!require('caret')) {
+  install.packages("caret", dependencies = TRUE)
+  library(caret)
+}
+#Not using corr because it ended up correlating the values of petal.length and petal.width maybe? Either way, it ended up omitting one of the data types so corr was deleted.
+preProClean <- preProcess(x = data, method = c("scale", "center"))
+data <- predict(preProClean, data %>% na.omit)
+print(str(data))
+```
+**Bonus Question:** 
+
+Does the last object have the variables in the correct data type? *(yes or no)*
+
+```
+#Yes, even though it isn't a numerical value, the factor data type is easiest to be read given the data within the variety datatype
+```
+
+# Part 2 - Unsturctured Text Data 
+
+**Question #6:** Import the `text.csv` file from the course data collection. 
+
+```{r echo=TRUE}
+#Calling in library readr to make sure that it's here:
+# Process Text ----
+#install.packages('tm')
+library(tm)
+# install.packages('stringr')
+library(stringr)
+
+setwd("~/Desktop/cu-hsp-learning-main/assignments/assignment2")
+#Forcing the Program to recognize this as the working directory
+
+data <- data.frame(read.csv("./data/text.csv"))
+data = tail(data,100)
+colnames(data) = c('text','class')
+str(data)
+```
+
+**Question #7:** Process the text data and class as reflected in the code contained in file `preprocess_text.r` from lines $10 - 23$. 
+
+```{r echo=TRUE}
+#Starting at line 11 of preprocess_text.r since we already previewed the unedited text before:
+text = c(lapply(data$text, as.character)) # convert to string/character format...
+data.text = text
+data.text = tolower(data.text) # convert letter casing to lower...
+data.text = tm::removeWords(data.text, stopwords("SMART")) # remove words like t(the, a, an, etc...)
+data.text = iconv(data.text, "latin1", "ASCII", sub = " ") # remove special characters...
+data.text = gsub("^NA| NA ", " ", data.text) # remove all NA values/patterns...
+data.text = tm::removePunctuation(data.text) # remove punctuation...
+data.text = tm::removeNumbers(data.text) # remove numbers...
+data.text = tm::stripWhitespace(data.text) # remove whitespace... 
+
+#Leaving the comments in from preprocess_text.r so that we know what each command does,
+
+# merge text w/ labels again...
+merged.data = data.frame(cbind(data.text, data$class))
+colnames(merged.data) = c("text", "class")
+merged.data$text = as.character(merged.data$text)
+str(merged.data)
+```
+
+# Part 3 - Unstructured Image Data
+
+**Question #8:** Locate some images representing two states from the internet *(i.e. sunny skies, cloudy skies)* and sort them into `train and validation` folder scheme and import them as shown in the script `image_processing.r`. Make sure to print back your the number of samples in each folder that you imported.  
+
+```{r echo=TRUE}
+# - Packages...
+library(keras)
+library(tensorflow)
+library(reticulate)
+library(tfruns)
+library(viridis) 
+
+# - [1] - Model 1===================================================
+start <- Sys.time()
+image_list <- c("0", "1") 
+
+# number of output classes (i.e. Classes (0 & 1))
+output_n <- length(image_list)
+
+# image size to scale down to (original images are 50 x 50 px)
+img_width <- 50
+img_height <- 50
+target_size <- c(img_width, img_height)
+
+# RGB = 3 channels
+channels <- 3
+
+# path to image folders
+#Using a new folder for this, named image. This folder just contains some photos of the moon and photos of the night sky without the moon.
+#If needed, I could also post that folder to canvas.
+path.train = "data/image/train"
+train_image_files_path <- file.path(path.train)
+path.valid = "data/image/valid"
+valid_image_files_path <- file.path(path.valid)
+
+# optional data augmentation
+train_data_gen = image_data_generator(
+  rescale = 1/255,
+  featurewise_center = T,
+  featurewise_std_normalization = T,
+  samplewise_std_normalization = T,
+  rotation_range = 2,
+  shear_range=0.2,
+  zoom_range=0.2,
+  horizontal_flip=TRUE,
+  vertical_flip = TRUE,
+  zca_whitening = TRUE,
+  validation_split = 0.2
+  #augment = TRUE
+)
+
+# Validation data shouldn't be augmented! But it should also be scaled.
+valid_data_gen <- image_data_generator(
+  rescale = 1/255,
+  validation_split = 0.2
+)  
+
+#Adding in this just because the program kept on getting confused and changing the directory that I wanted to go to, so I just forced the program to look here for this cell.
+setwd("~/Desktop/cu-hsp-learning-main")
+
+# training images
+train_image_array_gen <- flow_images_from_directory(train_image_files_path, 
+                                                    generator =train_data_gen,
+                                                    target_size = target_size,
+                                                    color_mode = "rgb",
+                                                    class_mode = 'categorical',
+                                                    shuffle=TRUE,
+                                                    #Shuffling to make sure that it's                                                     not mistaken as a pattern
+                                                    classes = image_list,
+                                                    subset = 'training',
+                                                    #interpolation = "bilinear",
+                                                    seed = 42)
+
+# validation images
+valid_image_array_gen <- flow_images_from_directory(valid_image_files_path, 
+                                                    generator = valid_data_gen,
+                                                    target_size = target_size,
+                                                    color_mode = "rgb",
+                                                    class_mode = 'categorical',
+                                                    shuffle=TRUE,
+                                                    classes = image_list,
+                                                    subset = 'validation',
+                                                    #interpolation = "bilinear",
+                                                    seed = 42)
+
+
+test_image_array_gen <- flow_images_from_directory(valid_image_files_path, 
+                                                   generator = valid_data_gen,
+                                                   target_size = target_size,
+                                                   color_mode = "rgb",
+                                                   class_mode = 'categorical',
+                                                   shuffle=TRUE,
+                                                   classes = image_list,
+                                                   subset = 'validation',
+                                                   #interpolation = "bilinear",
+                                                   seed = 42)
+
+### model definition
+
+# number of training samples
+train_samples <- train_image_array_gen$n
+train_samples
+
+# number of validation samples
+valid_samples <- valid_image_array_gen$n
+valid_samples
+```

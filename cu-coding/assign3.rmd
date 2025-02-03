@@ -1,0 +1,165 @@
+---
+title: 'Assignment #3 - Exploring the Data'
+author: 'Ethan Wong'
+date: "7/1/2021"
+output: html_document
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+options(width = 60)
+library(reticulate) ### (... helps Rstudio connect to your python enviroment.)
+py_config() # locate the direct path to your 
+
+```
+
+**Instructions** Provide your responses to the following questions in both R and Python. 
+Follow the guidelines @  [assign3_guidelines](https://github.com/jkorn81/cu-hsp-learning/tree/main/assignments/assignment3) for more direction.
+Also, make sure to use the supporting scripts @ [06_explore_data](https://github.com/jkorn81/cu-hsp-learning/tree/main/06_explore_data).
+
+# Visualizations 
+
+**Question #1:** Create a boxplot.
+
+```{r}
+#Importing the Data:
+library(datasets)
+data("iris")
+data = iris 
+
+#Importing the libraries necessary:
+library(caret)
+library(AppliedPredictiveModeling)
+
+#Making the Box Plot:
+featurePlot(x = data[, 1:4], 
+            y = data$Species, 
+            plot = "box", 
+            ## Pass in options to bwplot() 
+            scales = list(y = list(relation="free"),
+                          x = list(rot = 90)),  
+            layout = c(4,1 ), 
+            auto.key = list(columns = 2))
+```
+
+**Question #2:** Create a barplot.
+
+```{r}
+#Importing the libraries:
+library(ggplot2)
+
+#Importing the Data:
+data('iris')
+data = iris 
+
+#Creating the Bar plot:
+p = ggplot(data, aes(Species, Sepal.Length)) +
+  stat_summary(fun.y = mean,
+               geom = "bar",
+               fill = "White", 
+               color = "Black") + 
+  stat_summary(fun.data = mean_cl_normal, 
+               geom = "errorbar", 
+               position = position_dodge(width = 0.90), 
+               width = 0.2) + 
+  xlab('Iris Flower Type')+
+  ylab('Measurements')
+p
+```
+
+**Question #3:** Create a density plot.
+
+```{r}
+#The Libraries are already loaded, so now for the density plot
+transparentTheme(trans = .9)
+featurePlot(x = data[, 1:4], 
+            y = data$Species,
+            plot = "density", 
+            ## Pass in options to xyplot() to 
+            ## make it prettier
+            scales = list(x = list(relation="free"), 
+                          y = list(relation="free")), 
+            adjust = 1.5, 
+            pch = "|", 
+            layout = c(4, 1), 
+            auto.key = list(columns = 3))
+```
+
+**Question #4:** Create a lineplot. 
+
+```{r}
+#Libraries already loaded- straight to the line plot
+#I didn't even realize that I made a pun until after reviewing this
+p = ggplot(data, aes(Species, Sepal.Length)) +
+  stat_summary(fun.y = mean, ##adds the points
+               geom = "point") +
+  stat_summary(fun.y = mean, ##adds the line
+               geom = "line",
+               aes(group=1)) +
+  stat_summary(fun.data = mean_cl_normal, ##adds the error bars
+               geom = "errorbar", 
+               width = .2) +
+  xlab('Iris Flower Type')+
+  ylab('Measurement')
+p
+```
+
+**Question #5:** create a historgram.
+
+```{r}
+#Libraries already loaded
+p = ggplot(data, aes(Sepal.Width, color = Species)) + 
+    geom_histogram(binwidth = 0.4) + 
+    xlab("Iris Flower Type") + 
+    ylab("Frequency")
+p
+```
+
+**Question #6:** Create a scatterplot.
+
+```{r}
+p = ggplot(data, aes(Sepal.Width, Sepal.Length)) + 
+  geom_point() +
+  geom_smooth(method = 'lm', color = 'black') +
+  xlab('Iris Flower Types')+
+  ylab('Measurements')
+p
+```
+
+**Question #7:** Create a scatterplot matrix. 
+
+```{r}
+#Importing Library GGally:
+library(GGally)
+
+#Graphing:
+ggpairs(data, title = 'Sample Iris Data')
+```
+
+# Correlation 
+
+**Question #8:** Create a Correlation Matrix.  
+
+```{r}
+#Libraries already all installed
+cor = cor(data[,c(1:4)])
+print(cor)
+```
+
+**Question #9:** Create a Correlation Matrix plot.
+
+```{r}
+#Importing Libraries
+library(corrplot)
+#Graphing (Using the Correlation matrix from above)
+corrplot::corrplot(cor)
+```
+
+# Statistical Summaries 
+
+**Question #10:** Create at least one statistical summary table as discussed in the course. 
+
+```{r}
+#I really liked how Hmisc works, so I'm gonna use that one
+library(Hmisc)
+Hmisc::describe(data)
+```

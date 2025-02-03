@@ -1,0 +1,16 @@
+libraries <- function() {
+  library(quantmod)
+  library(remotes)
+  library(corrplot)
+  library(cowplot)
+  library(ggplot2)
+  library(outlieR)
+  library(magrittr)
+  library(NoiseFiltersR)
+  library(caret)
+  library(TTR)
+  library(readr)
+  library(arm)
+  library(png)
+  library(grid)
+}
