@@ -1,0 +1,215 @@
+/* Enforcing Margins */
+
+body {
+	margin: 0;
+}
+
+/* General Formatting for the Website */
+.website {
+	background-color: #E8ECEB;
+	font-family: Helvetica, sans-serif;
+}
+
+/* CSS Styling for the Navbar (Will be used to navigate questions, etc.) */
+.topdownli {
+	font-size: 18px;
+	font: italic;
+	border-right: 1px solid #202D38;
+	float: left;
+}
+
+.navbar {
+  background-color: #2D3E4E;
+  border: 0.1px solid #222;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 1;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: #D9DCDF;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  opacity: 1;
+}
+
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #8CBDB9;
+  opacity: 0.6;
+  transition: 0.3s;
+}
+
+.active {
+	background-color: #78A09D;
+}
+
+/* For the dropdown content */
+
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+  border-right: 1px solid #222;
+}
+
+.dropdown .dropbtn {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: #D9DCDF;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.dropdown .dropbtn-active {
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: #D9DCDF;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+  background-color: #78A09D;
+}
+
+.dropdown-content {
+  display: none;
+  background-color: #2D3E4E;
+  color: #D9DCDF;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  position: fixed;
+  z-index: 1;
+  border: 0.1px solid #222;
+}
+
+.dropdown-content a {
+  float: none;
+  color: #D9DCDF;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #eecdbb;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Top Header and for our Names */
+.headstyle-title {
+	background-color: #2D3E4E;
+    padding: 20px;
+    width: auto;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: -20px;
+	color: #D9DCDF;
+	font-size: 42px;
+}
+
+.headstyle-name {
+	background-color: #2D3E4E;
+    padding: 20px;
+    width: auto;
+	text-align: center;
+	margin-left: auto;
+	margin-bottom: -20px;
+	margin-top: -20px;
+	color: #D9DCDF;
+	text-align: center;
+	font-size: 16px;
+}
+
+/* For Aligning Things */
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+/* Some of the Styling Stuff for Headings, Flexboxes, Doohickeys */
+.container {
+  display: flex;
+  background-color: #C7C7C7;
+}
+
+.headstyle-subheading {
+	background-color: #2D3E4E;
+    padding: 20px;
+    width: auto;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	color: #D9DCDF;
+	font-size: 36px;
+}
+
+	/* For the Split Textbox */
+.container-outline-blue-l {
+  background-color: #2D3E4E;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  padding-left: 50px;
+  padding-right: 100px;
+  font-size: 28px;
+  color: #D9DCDF;
+}
+
+.container-outline-grey-r {
+  background-color: #C7C7C7;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  margin-left: 300px;
+  text-align: center;
+}
+
+	/* For the Larger Text Boxes */
+.pstyle {
+	background-color: #C7C7C7;
+	border-radius: 10px;
+    padding: 20px;
+    width: auto;
+	text-align: left;
+	margin-left: 50px;
+	margin-right: 50px;
+	border-style: outset;
+	font-size: 18px;
+}
+
+/* For the Project Link Downloads */
+.project-link {
+	display: block;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #E09E50;
+	border-radius: 10px;
+    padding: 10px;
+	width: 50%;
+	font-size: 20px;
+	text-style: bold;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}

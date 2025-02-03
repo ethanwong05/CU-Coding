@@ -1,0 +1,60 @@
+---
+title: "Crypto Energy Final Project"
+output: html_document
+author: 'Ethan Wong, Arjun Narasimhan, Leo Liao, Pedro Gronda' 
+date: '16th of July, 2021'
+---
+
+```{r}
+options(width = 60)
+library(reticulate) ### (... helps Rstudio connect to your python enviroment.)
+py_config()
+```
+
+```{r}
+setwd("C:/Users/wongs/Desktop/crypto-energy-final-project")
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+source("./R functions/libraries.r")
+libraries()
+```
+
+```{python warning=FALSE}
+import os
+os.chdir('C:/Users/wongs/Desktop/crypto-energy-final-project/scripts')
+from crypto_scraping import *
+
+```
+
+
+```{r warning=FALSE}
+setwd("C:/Users/wongs/Desktop/crypto-energy-final-project")
+source('scripts/import_data.r')
+source('scripts/data.r')
+```
+```{r warning=FALSE}
+setwd("C:/Users/wongs/Desktop/crypto-energy-final-project")
+source('scripts/explore_O.r')
+```
+
+```{r warning=FALSE}
+setwd("C:/Users/wongs/Desktop/crypto-energy-final-project")
+source('scripts/preprocess.r')
+```
+
+```{r message=FALSE, warning=FALSE}
+setwd("C:/Users/wongs/Desktop/crypto-energy-final-project")
+source('scripts/explore_P.r')
+```
+```{r message=FALSE, warning=FALSE, echo=false}
+py_install("sklearn")
+```
+
+```{python warning=FALSE}
+import os
+os.chdir('C:/Users/wongs/Desktop/crypto-energy-final-project/modeling')
+from reg_regression import *
+```
+
+
